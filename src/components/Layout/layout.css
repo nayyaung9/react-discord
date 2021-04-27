@@ -1,0 +1,48 @@
+@media only screen and (min-width: 900px) {
+  .grid-container {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 340px 1fr 1fr 1fr 230px;
+    grid-template-rows: 1fr 1.5fr 0.3fr;
+    grid-template-areas: "Sidebar Messages Messages Messages User-List" "Sidebar Messages Messages Messages User-List" "Sidebar Send-Messages Send-Messages Send-Messages User-List";
+  }
+
+  .menu-burger-button {
+    display: none !important;
+  }
+}
+
+/* MEDIA QUERIES FOR MOBILE */
+
+@media only screen and (max-width: 899px) {
+  .grid-container {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1.7fr 0.1fr;
+    grid-template-areas: "Messages" "Send-Messages";
+  }
+
+  .user-list-grid {
+    display: none;
+  }
+
+  .sidebar-container {
+    width: 300px;
+  }
+  .sidebar-grid {
+    display: none;
+  }
+
+  .title-container {
+    height: 56px;
+  }
+
+  .users-list-title {
+    height: 56px;
+  }
+
+  .send-message-emoji-button {
+    display: none !important;
+  }
+}

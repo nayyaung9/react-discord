@@ -12,6 +12,8 @@ import {
   registerFormValidation,
   loginFormValidation,
 } from "../../utils/formValidation";
+import { useDispatch } from 'react-redux';
+import { authActions } from '../../store/actions/auth.action';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -81,6 +83,7 @@ const IndexPage = () => {
   const classes = useStyles();
   const [mainView, setMainView] = useState(true);
   const [onRegister, setOnRegister] = useState(false);
+  const dispatch = useDispatch();
 
   const onChangeView = (e) => {
     e.preventDefault();
@@ -121,7 +124,7 @@ const IndexPage = () => {
                 }}
                 validationSchema={loginFormValidation}
                 onSubmit={(values) => {
-                  console.log(values);
+                  dispatch(authActions.authenticate(values));
                 }}
               >
                 {({
@@ -226,7 +229,7 @@ const IndexPage = () => {
                 }}
                 validationSchema={registerFormValidation}
                 onSubmit={(values) => {
-                  console.log(values);
+                  dispatch(authActions.register(values));
                 }}
               >
                 {({

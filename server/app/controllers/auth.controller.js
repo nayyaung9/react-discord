@@ -1,6 +1,9 @@
 "use strict";
 
 const User = require("../models/User");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const CONFIG = require("../../config/db");
 
 exports.register = async (req, res) => {
   const { username } = req.body;
@@ -25,35 +28,33 @@ exports.register = async (req, res) => {
 };
 
 exports.authenticate = async (req, res) => {
-  const { email, fullname, avatar_url } = req.body;
-  console.log(req.body);
-  const user = await User.findOne({ email });
+  const { username, password } = req.body;
 
-  if (!user) {
-    try {
-      let newUser = new User({
-        fullname,
-        email,
-        avatar_url,
-      });
-      const result = await newUser.save();
+  const user = await User.findOne({ username });
 
-      return res.status(200).json({ success: true, data: result });
-    } catch (err) {
-      return res.status(500).json({ success: false, data: err.message });
+  if (!user)
+    return res.status(404).json({ success: false, data: "User Not Found" });
+
+  bcrypt.compare(password, user.password, async (err, result) => {
+    if (!result) {
+      return res
+        .status(401)
+        .json({ success: false, data: "Username or Password is incorrect" });
     }
-  } else {
-    try {
-      let existedUser = await User.findOneAndUpdate(
-        {
-          _id: user._id,
-        },
-        { $set: req.body },
-        { new: true }
+    if (result) {
+      var token = jwt.sign(
+        { credentials: `${user._id}.${CONFIG.jwtSecret}.${user.email}` },
+        CONFIG.jwtSecret,
+        {}
       );
-      return res.status(200).json({ success: true, data: existedUser });
-    } catch (err) {
-      return res.status(500).json({ success: false, data: err.message });
+
+      const credentials = {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        token: token,
+      };
+      return res.status(200).json({ success: true, data: credentials });
     }
-  }
+  });
 };

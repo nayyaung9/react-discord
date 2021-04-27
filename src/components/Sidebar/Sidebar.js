@@ -16,7 +16,7 @@ import {
 } from "@material-ui/core";
 import ServerList from "../Server/ServerList";
 
-const drawerWidth = 330;
+const drawerWidth = 350;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,14 +58,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Sidebar = (props) => {
-  const { window } = props;
+  const { window, sideBarOpen, onCloseSideBar } = props;
   const classes = useStyles();
-  const [mobileOpen, setMobileOpen] = React.useState(false);
   const theme = useTheme();
-
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -109,8 +104,8 @@ const Sidebar = (props) => {
           container={container}
           variant="temporary"
           anchor={theme.direction === "rtl" ? "right" : "left"}
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
+          open={sideBarOpen}
+          onClose={onCloseSideBar}
           classes={{
             paper: classes.drawerPaper,
           }}

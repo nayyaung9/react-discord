@@ -4,7 +4,7 @@ import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
 import { makeStyles, Toolbar, AppBar, Typography } from "@material-ui/core";
 
-const drawerWidth = 300;
+const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ActiveUserList = (props) => {
-  const { window, onCloseOpenUsers, openUsers } = props;
+  const { window, onCloseActiveUser, activeUserOpen } = props;
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -63,8 +63,8 @@ const ActiveUserList = (props) => {
             container={container}
             variant="temporary"
             anchor="right"
-            open={openUsers}
-            onClose={onCloseOpenUsers}
+            open={activeUserOpen}
+            onClose={onCloseActiveUser}
             classes={{
               paper: classes.drawerPaper,
             }}
@@ -86,7 +86,7 @@ const ActiveUserList = (props) => {
             <AppBar position="static" className={classes.sidebar}>
               <Toolbar>
                 <Typography variant="h6" className={classes.title}>
-                  News
+                  Active Users
                 </Typography>
               </Toolbar>
             </AppBar>

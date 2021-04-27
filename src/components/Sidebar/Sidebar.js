@@ -1,21 +1,20 @@
 import React from "react";
 import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import MailIcon from "@material-ui/icons/Mail";
 import {
   makeStyles,
   AppBar,
   Toolbar,
   Typography,
   useTheme,
+  Button,
+  IconButton,
 } from "@material-ui/core";
 import ServerList from "../Server/ServerList";
-
+import PersonOutlinedIcon from "@material-ui/icons/PersonOutlined";
 const drawerWidth = 350;
 
 const useStyles = makeStyles((theme) => ({
@@ -40,10 +39,7 @@ const useStyles = makeStyles((theme) => ({
     zIndex: theme.zIndex.drawer + 1,
   },
   menuButton: {
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up("sm")]: {
-      display: "none",
-    },
+    marginRight: 5,
   },
   // necessary for content to be below app bar
   toolbar: theme.mixins.toolbar,
@@ -54,6 +50,19 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
+  },
+  authUserLayout: {
+    position: "absolute",
+    right: 0,
+    bottom: 0,
+    width: "75%",
+    background: "#2a2c31",
+    padding: 20,
+  },
+  authUserRow: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 }));
 
@@ -92,6 +101,29 @@ const Sidebar = (props) => {
             )
           )}
         </List>
+
+        <div className={classes.authUserLayout}>
+          <div className={classes.authUserRow}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                className={classes.menuButton}
+              >
+                <PersonOutlinedIcon />
+              </IconButton>
+              <Typography style={{ color: '#fff' }}>Ray4</Typography>
+            </div>
+            <Button style={{ color: '#fff' }} >Sign Out</Button>
+          </div>
+        </div>
       </div>
     </div>
   );

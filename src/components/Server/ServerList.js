@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { makeStyles, Avatar, IconButton } from "@material-ui/core";
+import { makeStyles, Avatar, IconButton, Divider } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import ServerDialog from "./ServerDialog";
+import HomeIcon from "@material-ui/icons/Home";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,6 +63,13 @@ const ServerList = () => {
 
   return (
     <div className={classes.root}>
+      <IconButton
+        color="inherit"
+        aria-label="menu"
+      >
+        <HomeIcon style={{ color: '#fff' }} />
+      </IconButton>
+      <Divider />
       {items.map((item, i) => (
         <Avatar src={item.img} key={i} className={classes.serverImage} />
       ))}

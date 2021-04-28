@@ -1,5 +1,5 @@
 import api from "../../api";
-import { OPEN_ALERT_STATUS, USER_SERVERS_LIST } from "../action.types";
+import { OPEN_ALERT_STATUS, USER_SERVERS_LIST, CHANGE_SERVER_VIEW } from "../action.types";
 
 const createServer = (data) => async (dispatch) => {
   await api
@@ -50,6 +50,7 @@ const fetchUserServer = (userId) => async (dispatch) => {
     .then((res) => {
       const { data } = res.data;
       dispatch({ type: USER_SERVERS_LIST, payload: data });
+      dispatch({ type: CHANGE_SERVER_VIEW, payload: data[0] })
     })
     .catch((err) => {
       dispatch({
@@ -63,7 +64,29 @@ const fetchUserServer = (userId) => async (dispatch) => {
     });
 };
 
+const joinServer = (payload) => async (dispatch) => {
+  await api
+    .post(`/api/server/join`, payload)
+    .then((res) => {
+      const { data } = res.data;
+      dispatch({ type: USER_SERVERS_LIST, payload: data });
+    })
+    .catch((err) => {
+      const { data } = err.response.data;
+
+      dispatch({
+        type: OPEN_ALERT_STATUS,
+        payload: {
+          open: true,
+          message: data,
+          status: "error",
+        },
+      });
+    });
+};
+
 export const serverActions = {
   createServer,
   fetchUserServer,
+  joinServer,
 };

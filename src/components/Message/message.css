@@ -1,0 +1,140 @@
+/* Scrollbar */
+
+::-webkit-scrollbar {
+  width: 14px;
+  height: 18px;
+}
+::-webkit-scrollbar-track {
+  background-clip: padding-box;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  border: 4px solid rgba(0, 0, 0, 0);
+  background-clip: padding-box;
+  background-color: #0e0f0f;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+
+.message-layout {
+  background-color: #36393e;
+  flex-grow: 1;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+.message-layout .message-header {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #1f2124;
+  height: 48px;
+  padding: 0 1rem;
+  position: fixed;
+  width: 100%;
+  background-color: #36393e;
+}
+.message-layout .message-header .title {
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 700;
+  flex-grow: 1;
+}
+.message-layout .message-header .title .prefix {
+  display: inline;
+  color: rgba(255, 255, 255, 0.3);
+  font-weight: 300;
+  padding: 0 0.25rem 0 0;
+  pointer-events: none;
+}
+.message-layout .message-body {
+  padding: 1rem;
+  font-weight: 300;
+  overflow-x: hidden;
+  flex: 1 1 auto;
+}
+.message-layout .message-body .post {
+  display: flex;
+  align-items: center;
+}
+.message-body .post:not(:last-child) {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.message-body .post .avatar {
+  min-width: 32px;
+  min-height: 32px;
+  border-radius: 50%;
+  background-color: #7289da;
+  margin: 0 1rem 0 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.message-body .post .avatar:hover {
+  -webkit-filter: brightness(90%);
+  filter: brightness(90%);
+}
+.message-body .post .username {
+  display: inline;
+  color: #fff;
+  font-weight: 500;
+  padding: 0 0.25rem 0 0;
+  cursor: pointer;
+}
+.message-body .post .username:hover {
+  text-decoration: underline;
+}
+.message-body .post .timestamp {
+  display: inline;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.75rem;
+  font-weight: 300;
+}
+.message-body .post .message {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* textbox */
+.send-message-container {
+  position: relative;
+  height: 100%;
+  padding: 1em;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  flex-basis: 100%;
+  justify-content: center;
+  z-index: 10;
+}
+
+.message-input {
+  flex-basis: 85%;
+}
+
+.send-message-border {
+  position: absolute;
+  /* width: 95%; */
+  border-top: 2px solid #42454a;
+}
+
+.message-text-area {
+  background: #484b52;
+  width: 100%;
+  resize: none;
+  color: white;
+  border-radius: 4px;
+  padding: 1em;
+  font-family: "Roboto";
+  font-size: 15px;
+  border: 1px solid #484b52;
+}
+
+.message-text-area:focus {
+  outline: none;
+}
+/* textbox */

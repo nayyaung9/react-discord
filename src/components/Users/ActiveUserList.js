@@ -2,8 +2,16 @@ import React from "react";
 
 import { Drawer, List, ListItem, ListItemText } from "@material-ui/core";
 import Hidden from "@material-ui/core/Hidden";
-import { makeStyles, Toolbar, AppBar, Typography } from "@material-ui/core";
+import {
+  makeStyles,
+  Toolbar,
+  AppBar,
+  Typography,
+  ListItemAvatar,
+  Avatar,
+} from "@material-ui/core";
 import { useSelector } from "react-redux";
+import "./users.css";
 
 const drawerWidth = 240;
 
@@ -59,54 +67,25 @@ const ActiveUserList = (props) => {
 
   return (
     <React.Fragment>
-      <nav className={classes.drawer} aria-label="mailbox folders">
-        <Hidden smUp implementation="css">
-          <Drawer
-            container={container}
-            variant="temporary"
-            anchor="right"
-            open={activeUserOpen}
-            onClose={onCloseActiveUser}
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-            ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
-            }}
-          >
-            ActiveUserList mobile
-          </Drawer>
-        </Hidden>
-        <Hidden xsDown implementation="css">
-          <Drawer
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-            variant="permanent"
-            open
-          >
-            <AppBar position="static" className={classes.sidebar}>
-              <Toolbar>
-                <Typography variant="h6" className={classes.title}>
-                  Active Users
-                </Typography>
-              </Toolbar>
-            </AppBar>
-
-            <List>
-              {activeServer?._users &&
-                activeServer?._users.map((user, index) => (
-                  <ListItem button key={user}>
-                    <ListItemText
-                      primary={`${user.username}`}
-                      style={{ color: "#fff" }}
-                    />
-                  </ListItem>
-                ))}
-            </List>
-          </Drawer>
-        </Hidden>
-      </nav>
+      <div className="active-users-list">
+        <List>
+          {activeServer?._users &&
+            activeServer?._users.map((user, index) => (
+              <ListItem button key={user}>
+                <ListItemAvatar>
+                  <Avatar>S</Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={
+                    <Typography className="text-white">
+                      {user.username}
+                    </Typography>
+                  }
+                />
+              </ListItem>
+            ))}
+        </List>
+      </div>
     </React.Fragment>
   );
 };

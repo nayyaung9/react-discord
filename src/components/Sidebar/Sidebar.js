@@ -21,36 +21,22 @@ import {
   TextField,
 } from "@material-ui/core";
 import ServerList from "../Server/ServerList";
-import PersonOutlinedIcon from "@material-ui/icons/PersonOutlined";
-import AddIcon from "@material-ui/icons/Add";
 // actions & utils
 import { useSelector, useDispatch } from "react-redux";
 import { channelActions } from "../../store/actions/channel.action";
+import { viewActions } from '../../store/actions/view.action';
 import { createChannelFormValidation } from "../../utils/formValidation";
 import { Formik } from "formik";
+import "./sidebar.css";
 
 const drawerWidth = 350;
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-  },
-  sidebar: {
-    background: "#2f3136",
-  },
   drawer: {
     [theme.breakpoints.up("sm")]: {
       width: drawerWidth,
       flexShrink: 0,
     },
-  },
-  appBar: {
-    [theme.breakpoints.up("sm")]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
-    },
-    backgroundColor: "#36393f",
-    zIndex: theme.zIndex.drawer + 1,
   },
   menuButton: {
     marginRight: 5,
@@ -60,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     width: drawerWidth,
     borderRight: 0,
+    background: "transparent",
   },
   title: {
     display: "block",
@@ -88,7 +75,6 @@ const useStyles = makeStyles((theme) => ({
 const Sidebar = (props) => {
   const { window, sideBarOpen, onCloseSideBar } = props;
   const classes = useStyles();
-  const theme = useTheme();
   const auth = useSelector((state) => state.auth.user);
   const activeServer = useSelector((state) => state.view.activeServer);
   const dispatch = useDispatch();
@@ -106,104 +92,60 @@ const Sidebar = (props) => {
     setCreateChannelDialog(true);
   };
 
-  const drawer = (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        height: "100%",
-      }}
-    >
-      <ServerList />
-      <div style={{ background: "#2f3136", width: "100%" }}>
-        <AppBar position="static" className={classes.sidebar}>
-          <Toolbar>
-            <Typography variant="body2" className={classes.title}>
-              {activeServer ? activeServer.name : "Channels"}
-            </Typography>
-            <IconButton
-              edge="start"
-              className={classes.menuButton}
-              color="inherit"
-              aria-label="menu"
-              onClick={onOpenCreateChannelDialog}
-            >
-              <AddIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-
-        <List>
-          {activeServer?._channels &&
-            activeServer?._channels.map((channel, index) => (
-              <ListItem button key={channel}>
-                <ListItemText
-                  primary={`# ${channel.channel_name}`}
-                  style={{ color: "#fff" }}
-                />
-              </ListItem>
-            ))}
-        </List>
-
-        <div className={classes.authUserLayout}>
-          <div className={classes.authUserRow}>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="start"
-                className={classes.menuButton}
-              >
-                <PersonOutlinedIcon />
-              </IconButton>
-              <Typography style={{ color: "#fff" }}>{auth.username}</Typography>
-            </div>
-            <Button style={{ color: "#fff" }}>Sign Out</Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  const onSwitchChannel = (channel) => {
+    dispatch(viewActions.changeChannelView(channel));
+  }
 
   return (
     <React.Fragment>
-      <nav className={classes.drawer} aria-label="mailbox folders">
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-        <Hidden smUp implementation="css">
-          <Drawer
-            container={container}
-            variant="temporary"
-            anchor={theme.direction === "rtl" ? "right" : "left"}
-            open={sideBarOpen}
-            onClose={onCloseSideBar}
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-            ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
-            }}
-          >
-            {drawer}
-          </Drawer>
-        </Hidden>
-        <Hidden xsDown implementation="css">
-          <Drawer
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-            variant="permanent"
-            open
-          >
-            {drawer}
-          </Drawer>
-        </Hidden>
-      </nav>
+      <ServerList />
+
+      <div className="sidebar-container">
+        <div className="sidebar-header">
+          <div className="title">General</div>
+        </div>
+        <div className="sidebar-body">
+          <div className="group">
+            <div className="category">Text Channels</div>
+            {activeServer &&
+              Object.keys(activeServer).length > 1 &&
+              activeServer._channels.map((channel, i) => (
+                <div className="channel" key={i} onClick={() => onSwitchChannel(channel)}>
+                  <div className="title"># {channel.channel_name}</div>
+                </div>
+              ))}
+          </div>
+          <div className="group">
+            <div className="category">Voice Channels</div>
+            <div className="channel">
+              <div className="title"> channel</div>
+            </div>
+          </div>
+        </div>
+
+        <footer className="channels-footer">
+          <img
+            className="avatar"
+            alt="Avatar"
+            src="https://discordapp.com/assets/0e291f67c9274a1abdddeb3fd919cbaa.png"
+          />
+          <div className="channels-footer-details">
+            <span className="username">yourself</span>
+            <span className="tag">#0001</span>
+          </div>
+          <div className="channels-footer-controls button-group">
+            <button aria-label="Mute" className="button button-mute"></button>
+            <button
+              aria-label="Deafen"
+              className="button button-deafen"
+            ></button>
+            <button
+              aria-label="Settings"
+              className="button button-settings"
+            ></button>
+          </div>
+        </footer>
+      </div>
 
       <Dialog
         open={createChannelDialog}

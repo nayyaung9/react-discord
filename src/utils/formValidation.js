@@ -23,6 +23,12 @@ export const createServerFormValidation = Yup.object().shape({
     .required("Server name is required"),
 });
 
+export const joinServerFormValidation = Yup.object().shape({
+  serverId: Yup.string()
+    .trim()
+    .min(3, "Server Id should be at least 3 characters")
+    .required("Server Id is required"),
+});
 // channel
 export const createChannelFormValidation = Yup.object().shape({
   channel_name: Yup.string()

@@ -1,0 +1,57 @@
+.server-container {
+  display: flex;
+  flex: 0 0 67px;
+  flex-direction: column;
+  align-items: center;
+  background-color: #1F2124;
+}
+.server-container .icon {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  background-color: #2e3136;
+  border-radius: 50%;
+  min-width: 50px;
+  min-height: 50px;
+  cursor: pointer;
+}
+.server-container .icon:before, .server-container .icon:after {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  z-index: -1;
+}
+.server-container .icon:hover:before, .server-container .icon:hover:after {
+  opacity: 1;
+  z-index: 1;
+}
+.server-container .icon:before {
+  left: calc(100% + 0.25rem);
+  border-top: 0.25rem solid transparent;
+  border-bottom: 0.25rem solid transparent;
+  border-right: 0.25rem solid #7289da;
+  content: "";
+}
+.server-container .icon:after {
+  left: calc(100% + 0.5rem);
+  background-color: #7289da;
+  border-radius: 0.25rem;
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  content: attr(data-tooltip);
+  white-space: nowrap;
+}
+.server-container .icon:first-child {
+  margin-top: 0.5rem;
+}
+.server-container .icon:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+.server-container .icon.messenger {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxOS4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM6c2tldGNoPSJodHRwOi8vd3d3LmJvaGVtaWFuY29kaW5nLmNvbS9za2V0Y2gvbnMiDQoJIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSItMjg5IDM4MiAzMiAzMCINCgkgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAtMjg5IDM4MiAzMiAzMDsiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4NCgkuc3Qwe2ZpbGw6I0ZGRkZGRjt9DQoJLnN0MXtvcGFjaXR5OjAuNjt9DQo8L3N0eWxlPg0KPHBhdGggY2xhc3M9InN0MCIgZD0iTS0yNzMsNDA5LjVMLTI3Myw0MDkuNWMtNC4xLDAtNi44LTAuNi03LjktMS43Yy0wLjUtMC42LTAuNi0xLjEtMC42LTEuM2MwLTAuNywwLjEtMi45LDAuNi0zLjgNCgljMC4xLTAuMywwLjUtMSw0LjUtMi40Yy0xLjYtMS40LTIuNi00LTIuNi03LjFjMC00LjIsMi4zLTcsNS45LTcuMWwwLjEsMGMzLjYsMC4xLDUuOSwyLjgsNS45LDcuMWMwLDMuMS0xLDUuNy0yLjYsNy4xDQoJYzQsMS40LDQuNCwyLjEsNC41LDIuNGMwLjQsMC45LDAuNSwzLjEsMC42LDMuOGMwLDAuMiwwLDAuNy0wLjYsMS4zQy0yNjYuMyw0MDguOS0yNjguOSw0MDkuNS0yNzMsNDA5LjV6IE0tMjczLDQwNy41TC0yNzMsNDA3LjUNCgljNS4xLDAsNi4yLTAuOSw2LjQtMS4xYy0wLjEtMS4xLTAuMi0yLjMtMC4zLTIuN2MtMC42LTAuNC0yLjktMS4zLTQuOC0xLjlsLTAuNy0wLjJsLTAuMS0ybDAuNy0wLjNjMS43LTAuNiwyLjgtMy4xLDIuOC02LjENCgljMC0zLjEtMS41LTUtMy45LTUuMWMtMi41LDAtNCwyLTQsNS4xYzAsMywxLjEsNS41LDIuOCw2LjFsMC43LDAuM2wtMC4xLDJsLTAuNywwLjJjLTEuOSwwLjYtNC4yLDEuNS00LjgsMS45DQoJYy0wLjEsMC40LTAuMywxLjYtMC4zLDIuN0MtMjc5LjIsNDA2LjYtMjc4LDQwNy41LTI3Myw0MDcuNXoiLz4NCjxnIGNsYXNzPSJzdDEiPg0KCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0tMjU3LDQwMi44YzAtMC43LTAuMS0yLjktMC42LTMuOGMtMC4xLTAuMy0wLjUtMS00LjUtMi40YzEuNi0xLjQsMi42LTQsMi42LTcuMWMwLTQuMi0yLjMtNy01LjktNy4xbC0wLjEsMA0KCQljLTEuOSwwLTMuNSwwLjgtNC41LDIuMmMwLjYsMC4zLDEuMiwwLjYsMS44LDFjMC43LTAuOCwxLjYtMS4zLDIuOC0xLjNjMi40LDAsMy45LDIsMy45LDUuMWMwLDMtMS4xLDUuNS0yLjgsNi4xbC0wLjcsMC4zbDAuMSwyDQoJCWwwLjcsMC4yYzEuOSwwLjYsNC4zLDEuNSw0LjgsMS45YzAuMSwwLjQsMC4zLDEuNiwwLjMsMi43Yy0wLjIsMC4yLTEsMC44LTMuOCwxYzAuMSwwLjYsMC4yLDEuMiwwLjIsMmMyLjUtMC4yLDQuMi0wLjgsNS0xLjYNCgkJQy0yNTcsNDAzLjUtMjU3LDQwMy0yNTcsNDAyLjh6Ii8+DQoJPHBhdGggY2xhc3M9InN0MCIgZD0iTS0yODcsNDAyLjdjMC4xLTEuMSwwLjItMi4zLDAuMy0yLjdjMC42LTAuNCwyLjktMS4zLDQuOC0xLjlsMC43LTAuMmwwLjEtMmwtMC43LTAuMw0KCQljLTEuNi0wLjYtMi44LTMuMS0yLjgtNi4xYzAtMy4xLDEuNS01LDQtNS4xYzEuMiwwLDIuMSwwLjUsMi44LDEuM2MwLjUtMC40LDEuMS0wLjgsMS44LTFjLTEtMS40LTIuNi0yLjItNC41LTIuMmwtMC4xLDANCgkJYy0zLjYsMC01LjksMi44LTUuOSw3LjFjMCwzLjEsMSw1LjcsMi42LDcuMWMtNCwxLjQtNC40LDIuMS00LjUsMi40Yy0wLjQsMC45LTAuNSwzLjEtMC42LDMuOGMwLDAuMiwwLDAuNywwLjYsMS4zDQoJCWMwLjgsMC45LDIuNSwxLjQsNS4xLDEuNmMwLTAuNywwLjEtMS40LDAuMi0yQy0yODYsNDAzLjUtMjg2LjgsNDAyLjktMjg3LDQwMi43eiIvPg0KPC9nPg0KPC9zdmc+DQo=);
+  background-repeat: no-repeat;
+  background-position: 50%;
+  background-size: 1.75rem 1.25rem;
+}

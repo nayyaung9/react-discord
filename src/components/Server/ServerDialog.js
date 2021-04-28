@@ -8,7 +8,10 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import PersonAddOutlinedIcon from "@material-ui/icons/PersonAddOutlined";
 import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
 import { useDispatch, useSelector } from "react-redux";
-import { createServerFormValidation } from "../../utils/formValidation";
+import {
+  createServerFormValidation,
+  joinServerFormValidation,
+} from "../../utils/formValidation";
 import { Formik } from "formik";
 import { serverActions } from "../../store/actions/server.action";
 
@@ -122,17 +125,57 @@ export default function ServerDialog({ open, handleClose }) {
                 Enter a the Server Id provided by your friend and start chatting
                 right now!
               </Typography>
-              <TextField placeholder="Server Id" />
-              <Button
-                dense
-                color="primary"
-                variant="contained"
-                fullWidth
-                style={{ marginBottom: 10 }}
+              <Formik
+                initialValues={{
+                  serverId: "",
+                }}
+                validationSchema={joinServerFormValidation}
+                onSubmit={(values) => {
+                  const payload = {
+                    serverId: values.serverId,
+                    userId: auth._id,
+                  };
+                  dispatch(serverActions.joinServer(payload));
+                  onCloseAllDialog();
+                }}
               >
-                <PersonAddOutlinedIcon style={{ marginRight: 10 }} />
-                Join a Server
-              </Button>
+                {({
+                  handleSubmit,
+                  handleChange,
+                  handleBlur,
+                  values,
+                  errors,
+                  touched,
+                }) => (
+                  <form onSubmit={handleSubmit}>
+                    <TextField
+                      type="text"
+                      id="serverId"
+                      placeholder="Server Id"
+                      value={values.serverId}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      helperText={touched.serverId ? errors.serverId : ""}
+                      error={touched.serverId && Boolean(errors.serverId)}
+                      style={{ margin: "10px 0" }}
+                      variant="outlined"
+                      fullWidth
+                      size="small"
+                    />
+                    <Button
+                      dense
+                      color="primary"
+                      variant="contained"
+                      type="submit"
+                      fullWidth
+                      style={{ marginBottom: 10 }}
+                    >
+                      <PersonAddOutlinedIcon style={{ marginRight: 10 }} />
+                      Join a Server
+                    </Button>
+                  </form>
+                )}
+              </Formik>
             </DialogContentText>
           </DialogContent>
           <DialogActions>

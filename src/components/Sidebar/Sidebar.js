@@ -1,20 +1,34 @@
-import React from "react";
-import Drawer from "@material-ui/core/Drawer";
-import Hidden from "@material-ui/core/Hidden";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
+import React, { useState } from "react";
+// Components
 import {
   makeStyles,
+  Drawer,
+  Hidden,
+  List,
+  ListItem,
+  ListItemText,
   AppBar,
   Toolbar,
   Typography,
   useTheme,
   Button,
   IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  TextField,
 } from "@material-ui/core";
 import ServerList from "../Server/ServerList";
 import PersonOutlinedIcon from "@material-ui/icons/PersonOutlined";
+import AddIcon from "@material-ui/icons/Add";
+// actions & utils
+import { useSelector, useDispatch } from "react-redux";
+import { channelActions } from "../../store/actions/channel.action";
+import { createChannelFormValidation } from "../../utils/formValidation";
+import { Formik } from "formik";
+
 const drawerWidth = 350;
 
 const useStyles = makeStyles((theme) => ({
@@ -47,6 +61,11 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
     borderRight: 0,
   },
+  title: {
+    display: "block",
+    flexGrow: 1,
+    flexWrap: "wrap",
+  },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
@@ -55,9 +74,9 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     right: 0,
     bottom: 0,
-    width: "75%",
+    width: "77%",
     background: "#2a2c31",
-    padding: 20,
+    padding: "0 10px",
   },
   authUserRow: {
     display: "flex",
@@ -70,9 +89,22 @@ const Sidebar = (props) => {
   const { window, sideBarOpen, onCloseSideBar } = props;
   const classes = useStyles();
   const theme = useTheme();
+  const auth = useSelector((state) => state.auth.user);
+  const activeServer = useSelector((state) => state.view.activeServer);
+  const dispatch = useDispatch();
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
+
+  const [createChannelDialog, setCreateChannelDialog] = useState(false);
+
+  const onCloseCreateChannelDialog = () => {
+    setCreateChannelDialog(false);
+  };
+
+  const onOpenCreateChannelDialog = () => {
+    setCreateChannelDialog(true);
+  };
 
   const drawer = (
     <div
@@ -86,20 +118,31 @@ const Sidebar = (props) => {
       <div style={{ background: "#2f3136", width: "100%" }}>
         <AppBar position="static" className={classes.sidebar}>
           <Toolbar>
-            <Typography variant="h6" className={classes.title}>
-              News
+            <Typography variant="body2" className={classes.title}>
+              {activeServer ? activeServer.name : "Channels"}
             </Typography>
+            <IconButton
+              edge="start"
+              className={classes.menuButton}
+              color="inherit"
+              aria-label="menu"
+              onClick={onOpenCreateChannelDialog}
+            >
+              <AddIcon />
+            </IconButton>
           </Toolbar>
         </AppBar>
 
         <List>
-          {["general", "gaming", "programming", "Health", "Science"].map(
-            (text, index) => (
-              <ListItem button key={text}>
-                <ListItemText primary={`# ${text}`} style={{ color: "#fff" }} />
+          {activeServer?._channels &&
+            activeServer?._channels.map((channel, index) => (
+              <ListItem button key={channel}>
+                <ListItemText
+                  primary={`# ${channel.channel_name}`}
+                  style={{ color: "#fff" }}
+                />
               </ListItem>
-            )
-          )}
+            ))}
         </List>
 
         <div className={classes.authUserLayout}>
@@ -119,9 +162,9 @@ const Sidebar = (props) => {
               >
                 <PersonOutlinedIcon />
               </IconButton>
-              <Typography style={{ color: '#fff' }}>Ray4</Typography>
+              <Typography style={{ color: "#fff" }}>{auth.username}</Typography>
             </div>
-            <Button style={{ color: '#fff' }} >Sign Out</Button>
+            <Button style={{ color: "#fff" }}>Sign Out</Button>
           </div>
         </div>
       </div>
@@ -129,37 +172,110 @@ const Sidebar = (props) => {
   );
 
   return (
-    <nav className={classes.drawer} aria-label="mailbox folders">
-      {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-      <Hidden smUp implementation="css">
-        <Drawer
-          container={container}
-          variant="temporary"
-          anchor={theme.direction === "rtl" ? "right" : "left"}
-          open={sideBarOpen}
-          onClose={onCloseSideBar}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-        >
-          {drawer}
-        </Drawer>
-      </Hidden>
-      <Hidden xsDown implementation="css">
-        <Drawer
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-          variant="permanent"
-          open
-        >
-          {drawer}
-        </Drawer>
-      </Hidden>
-    </nav>
+    <React.Fragment>
+      <nav className={classes.drawer} aria-label="mailbox folders">
+        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+        <Hidden smUp implementation="css">
+          <Drawer
+            container={container}
+            variant="temporary"
+            anchor={theme.direction === "rtl" ? "right" : "left"}
+            open={sideBarOpen}
+            onClose={onCloseSideBar}
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
+          >
+            {drawer}
+          </Drawer>
+        </Hidden>
+        <Hidden xsDown implementation="css">
+          <Drawer
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            variant="permanent"
+            open
+          >
+            {drawer}
+          </Drawer>
+        </Hidden>
+      </nav>
+
+      <Dialog
+        open={createChannelDialog}
+        onClose={onCloseCreateChannelDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        fullWidth="xs"
+        maxWidth="xs"
+      >
+        <DialogTitle id="alert-dialog-title">Create a Text Channel</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            <Formik
+              initialValues={{
+                channel_name: "",
+              }}
+              validationSchema={createChannelFormValidation}
+              onSubmit={(values) => {
+                const payload = {
+                  channel_name: values.channel_name,
+                  serverId: activeServer?.uniqueId,
+                  userId: auth?._id, // for fetch after creating a new channel
+                };
+                dispatch(channelActions.createChannel(payload));
+                onCloseCreateChannelDialog();
+              }}
+            >
+              {({
+                handleSubmit,
+                handleChange,
+                handleBlur,
+                values,
+                errors,
+                touched,
+              }) => (
+                <form onSubmit={handleSubmit}>
+                  <TextField
+                    type="text"
+                    id="channel_name"
+                    placeholder="Channel Name"
+                    value={values.channel_name}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    helperText={touched.channel_name ? errors.channel_name : ""}
+                    error={touched.channel_name && Boolean(errors.channel_name)}
+                    style={{ margin: "10px 0" }}
+                    variant="outlined"
+                    fullWidth
+                    size="small"
+                  />
+
+                  <Button
+                    type="submit"
+                    color="primary"
+                    variant="contained"
+                    fullWidth
+                    style={{ background: "#3ca374", color: "white" }}
+                  >
+                    Create a Channel
+                  </Button>
+                </form>
+              )}
+            </Formik>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onCloseCreateChannelDialog} color="primary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
   );
 };
 

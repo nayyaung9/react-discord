@@ -34,7 +34,7 @@ const authenticate = (data) => async (dispatch) => {
     })
     .catch((err) => {
       const { data } = err.response.data;
-
+      console.log('err', err.response);
       dispatch({
         type: OPEN_ALERT_STATUS,
         payload: {

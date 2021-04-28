@@ -14,3 +14,19 @@ export const registerFormValidation = Yup.object().shape({
     "Passwords must be same."
   ),
 });
+
+// server
+export const createServerFormValidation = Yup.object().shape({
+  name: Yup.string()
+    .trim()
+    .min(3, "Server name should be at least 3 characters")
+    .required("Server name is required"),
+});
+
+// channel
+export const createChannelFormValidation = Yup.object().shape({
+  channel_name: Yup.string()
+    .trim()
+    .min(3, "Channel name should be at least 3 characters")
+    .required("Channel name is required"),
+});

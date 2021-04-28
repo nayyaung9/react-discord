@@ -11,12 +11,20 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Sidebar from "../Sidebar/Sidebar";
 import ActiveUserList from "../Users/ActiveUserList";
+import "./layout.css";
+// mockup data
+import { items } from "./chatItems";
+import { Avatar } from "@material-ui/core";
 
 const drawerWidth = 350;
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
+    height: '100%',
+    position: 'relative',
+    overflowY: 'auto',
+    maxHeight: 'calc(100 % - 64px)',
   },
   drawer: {
     [theme.breakpoints.up("sm")]: {
@@ -46,8 +54,12 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
   },
   messageLayout: {
+    width: "100%",
     backgroundColor: "#36393f",
-    height: "100vh",
+    bottom: 0,
+    // position: "absolute",
+    // maxHeight: 'calc(100 % - 64px)',
+    // overflowY: "auto",
   },
   content: {
     flexGrow: 1,
@@ -74,6 +86,28 @@ function Layout(props) {
 
   const onCloseActiveUser = () => {
     setActiveUserOpen(false);
+  };
+
+  const renderChatItems = (items) => {
+    return items.map((item, i) => (
+      <div
+        key={i}
+        style={{ display: "flex", flexDirection: "row", marginBottom: 20 }}
+      >
+        <Avatar
+          src="./image/discord.jpg"
+          style={{ marginRight: 10 }}
+          alt={item.username + i}
+        />
+        <div>
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <Typography style={{ marginRight: 10 }}>{item.username}</Typography>
+            <Typography>{item.timestamps}</Typography>
+          </div>
+          <Typography>{item.message}</Typography>
+        </div>
+      </div>
+    ));
   };
 
   return (
@@ -109,36 +143,7 @@ function Layout(props) {
       <div className={classes.messageLayout}>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          <Typography paragraph>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus
-            dolor purus non enim praesent elementum facilisis leo vel. Risus at
-            ultrices mi tempus imperdiet. Semper risus in hendrerit gravida
-            rutrum quisque non tellus. Convallis convallis tellus id interdum
-            velit laoreet id donec ultrices. Odio morbi quis commodo odio aenean
-            sed adipiscing. Amet nisl suscipit adipiscing bibendum est ultricies
-            integer quis. Cursus euismod quis viverra nibh cras. Metus vulputate
-            eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo
-            quis imperdiet massa tincidunt. Cras tincidunt lobortis feugiat
-            vivamus at augue. At augue eget arcu dictum varius duis at
-            consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
-            donec massa sapien faucibus et molestie ac.
-          </Typography>
-          <Typography paragraph>
-            Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
-            ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar
-            elementum integer enim neque volutpat ac tincidunt. Ornare
-            suspendisse sed nisi lacus sed viverra tellus. Purus sit amet
-            volutpat consequat mauris. Elementum eu facilisis sed odio morbi.
-            Euismod lacinia at quis risus sed vulputate odio. Morbi tincidunt
-            ornare massa eget egestas purus viverra accumsan in. In hendrerit
-            gravida rutrum quisque non tellus orci ac. Pellentesque nec nam
-            aliquam sem et tortor. Habitant morbi tristique senectus et.
-            Adipiscing elit duis tristique sollicitudin nibh sit. Ornare aenean
-            euismod elementum nisi quis eleifend. Commodo viverra maecenas
-            accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam
-            ultrices sagittis orci a.
-          </Typography>
+          {renderChatItems(items)}
         </main>
       </div>
 

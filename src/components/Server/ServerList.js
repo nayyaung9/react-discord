@@ -1,26 +1,30 @@
-import React, { useState } from "react";
-import { makeStyles, Avatar, IconButton, Divider } from "@material-ui/core";
+import React, { useState, useEffect } from "react";
+import {
+  makeStyles,
+  Avatar,
+  IconButton,
+  Divider,
+  Tooltip,
+} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import ServerDialog from "./ServerDialog";
 import HomeIcon from "@material-ui/icons/Home";
+import { useDispatch, useSelector } from "react-redux";
+import { serverActions } from "../../store/actions/server.action";
+import { viewActions } from "../../store/actions/view.action";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: theme.spacing(2, 2),
+    padding: theme.spacing(2, 1),
     display: "flex",
     flexDirection: "column",
     backgroundColor: "#202225",
   },
 
-  serverImage: {
-    width: theme.spacing(7),
-    height: theme.spacing(7),
-    borderBottom: 20,
-  },
-
   addButton: {
     backgroundColor: "#2f3136",
-    width: "100%",
+    display: "block",
+    margin: "0 auto",
     "&:hover": {
       background: "green",
       borderRadius: 10,
@@ -33,23 +37,21 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   systemButtons: {
-    marginTop: 20,
+    marginTop: 10,
   },
 }));
 
-const items = [
-  {
-    name: "React",
-    img: "./image/react.png",
-  },
-  {
-    name: "Node",
-    img: "./image/node.png",
-  },
-];
-
 const ServerList = () => {
   const classes = useStyles();
+
+  const dispatch = useDispatch();
+
+  const auth = useSelector((state) => state.auth.user);
+  const servers = useSelector((state) => state.server.servers);
+
+  useEffect(() => {
+    dispatch(serverActions.fetchUserServer(auth?._id));
+  }, [auth._id]);
 
   const [open, setOpen] = useState(false);
 
@@ -61,18 +63,28 @@ const ServerList = () => {
     setOpen(false);
   };
 
+  const onChangeServerView = (server) => {
+    return dispatch(viewActions.changeServerView(server));
+  };
   return (
     <div className={classes.root}>
-      <IconButton
-        color="inherit"
-        aria-label="menu"
-      >
-        <HomeIcon style={{ color: '#fff' }} />
+      <IconButton color="inherit" aria-label="menu">
+        <HomeIcon style={{ color: "#fff" }} />
       </IconButton>
       <Divider />
-      {items.map((item, i) => (
-        <Avatar src={item.img} key={i} className={classes.serverImage} />
-      ))}
+      {servers &&
+        servers.map((server, i) => (
+          <Tooltip
+            title={server.name}
+            placement="right"
+            key={i}
+            onClick={() => onChangeServerView(server)}
+          >
+            <IconButton>
+              <Avatar src="./image/discord.jpg" />
+            </IconButton>
+          </Tooltip>
+        ))}
       <div className={classes.systemButtons}>
         <IconButton
           className={classes.addButton}

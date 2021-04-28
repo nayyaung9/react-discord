@@ -18,6 +18,7 @@ exports.register = async (req, res) => {
 
       return res.status(200).json({ success: true, data: newUser });
     } catch (err) {
+      console.log('err', err);
       return res
         .status(500)
         .json({ success: false, data: "There was an error" });
@@ -49,7 +50,7 @@ exports.authenticate = async (req, res) => {
       );
 
       const credentials = {
-        id: user._id,
+        _id: user._id,
         username: user.username,
         email: user.email,
         token: token,

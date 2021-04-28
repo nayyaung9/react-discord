@@ -1,8 +1,9 @@
 import React from "react";
 
-import Drawer from "@material-ui/core/Drawer";
+import { Drawer, List, ListItem, ListItemText } from "@material-ui/core";
 import Hidden from "@material-ui/core/Hidden";
 import { makeStyles, Toolbar, AppBar, Typography } from "@material-ui/core";
+import { useSelector } from "react-redux";
 
 const drawerWidth = 240;
 
@@ -49,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ActiveUserList = (props) => {
   const { window, onCloseActiveUser, activeUserOpen } = props;
+  const activeServer = useSelector((state) => state.view.activeServer);
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -90,7 +92,18 @@ const ActiveUserList = (props) => {
                 </Typography>
               </Toolbar>
             </AppBar>
-            ActiveUserList
+
+            <List>
+              {activeServer?._users &&
+                activeServer?._users.map((user, index) => (
+                  <ListItem button key={user}>
+                    <ListItemText
+                      primary={`${user.username}`}
+                      style={{ color: "#fff" }}
+                    />
+                  </ListItem>
+                ))}
+            </List>
           </Drawer>
         </Hidden>
       </nav>

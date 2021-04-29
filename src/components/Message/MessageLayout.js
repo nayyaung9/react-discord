@@ -108,7 +108,7 @@ const MessageLayout = ({
         >
           <MenuIcon className="white-icon" />
         </IconButton>
-        <div className="title"># {activeChannel.channel_name}</div>
+        <div className="title"># {activeChannel ? activeChannel.channel_name : ''}</div>
         <IconButton
           edge="start"
           className={classes.menuButton}

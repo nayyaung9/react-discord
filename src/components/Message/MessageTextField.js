@@ -18,7 +18,7 @@ const MessageTextField = ({
       <div className="send-message-container">
         <TextareaAutosize
           aria-label="empty textarea"
-          placeholder={`Message #${activeChannel.channel_name}`}
+          placeholder={`Message #${activeChannel ? activeChannel.channel_name : ''}`}
           className="message-text-area"
           value={chatMessage}
           onChange={(e) => handleOnChange(e)}

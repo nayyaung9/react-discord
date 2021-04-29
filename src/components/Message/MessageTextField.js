@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 
-const MessageTextField = ({ activeChannel }) => {
-  const [chatMessage, setChatMessage] = useState("");
+const MessageTextField = ({
+  onSendMessage,
+  activeChannel,
+  chatMessage,
+  setChatMessage,
+}) => {
 
   function handleOnChange(e) {
     if (e.target.value !== "\n") setChatMessage(e.target.value);
@@ -19,6 +23,7 @@ const MessageTextField = ({ activeChannel }) => {
           value={chatMessage}
           onChange={(e) => handleOnChange(e)}
         />
+        <button onClick={onSendMessage}>send</button>
       </div>
     </React.Fragment>
   );

@@ -6,11 +6,17 @@
 .white-icon {
   color: white !important;
 }
+.text-white {
+  color: white !important;
+}
+.flex {
+  display: flex;
+}
+.flex-row {
+  flex-direction: row;
+}
 
-@media screen and (max-width: 769px) {
-  .server-container,
-  .sidebar-container,
-  .active-users-list {
-    display: none;
-  }
+.justify-between {
+  justify-content: space-between;
+  align-items: center;
 }

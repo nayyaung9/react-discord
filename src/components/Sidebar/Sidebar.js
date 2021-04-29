@@ -2,15 +2,8 @@ import React, { useState } from "react";
 // Components
 import {
   makeStyles,
-  Drawer,
+  SwipeableDrawer,
   Hidden,
-  List,
-  ListItem,
-  ListItemText,
-  AppBar,
-  Toolbar,
-  Typography,
-  useTheme,
   Button,
   IconButton,
   Dialog,
@@ -21,68 +14,37 @@ import {
   TextField,
 } from "@material-ui/core";
 import ServerList from "../Server/ServerList";
+import AddIcon from "@material-ui/icons/Add";
 // actions & utils
 import { useSelector, useDispatch } from "react-redux";
 import { channelActions } from "../../store/actions/channel.action";
-import { viewActions } from '../../store/actions/view.action';
+import { viewActions } from "../../store/actions/view.action";
 import { createChannelFormValidation } from "../../utils/formValidation";
 import { Formik } from "formik";
 import "./sidebar.css";
 
-const drawerWidth = 350;
-
 const useStyles = makeStyles((theme) => ({
-  drawer: {
-    [theme.breakpoints.up("sm")]: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
-  },
-  menuButton: {
-    marginRight: 5,
-  },
-  // necessary for content to be below app bar
-  toolbar: theme.mixins.toolbar,
   drawerPaper: {
-    width: drawerWidth,
-    borderRight: 0,
-    background: "transparent",
-  },
-  title: {
-    display: "block",
-    flexGrow: 1,
-    flexWrap: "wrap",
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-  },
-  authUserLayout: {
-    position: "absolute",
-    right: 0,
-    bottom: 0,
-    width: "77%",
-    background: "#2a2c31",
-    padding: "0 10px",
-  },
-  authUserRow: {
+    width: 320,
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
+    borderRight: 0,
+    background: "#303136",
   },
 }));
 
 const Sidebar = (props) => {
   const { window, sideBarOpen, onCloseSideBar } = props;
   const classes = useStyles();
+
   const auth = useSelector((state) => state.auth.user);
   const activeServer = useSelector((state) => state.view.activeServer);
   const dispatch = useDispatch();
 
+  const [createChannelDialog, setCreateChannelDialog] = useState(false);
+
   const container =
     window !== undefined ? () => window().document.body : undefined;
-
-  const [createChannelDialog, setCreateChannelDialog] = useState(false);
 
   const onCloseCreateChannelDialog = () => {
     setCreateChannelDialog(false);
@@ -94,58 +56,92 @@ const Sidebar = (props) => {
 
   const onSwitchChannel = (channel) => {
     dispatch(viewActions.changeChannelView(channel));
-  }
+  };
+
+  const responsiveView = () => {
+    return (
+      <React.Fragment>
+        <ServerList />
+
+        <div className="sidebar-container">
+          <div className="sidebar-header">
+            <div className="title">General</div>
+          </div>
+          <div className="sidebar-body">
+            <div className="group">
+              <div className="flex flex-row justify-between">
+                <div className="category">Text Channels</div>
+                <IconButton onClick={onOpenCreateChannelDialog}>
+                  <AddIcon className="white-icon" style={{ width: 20 }} />
+                </IconButton>
+              </div>
+              {activeServer &&
+                Object.keys(activeServer).length > 1 &&
+                activeServer._channels.map((channel, i) => (
+                  <div
+                    className="channel"
+                    key={i}
+                    onClick={() => onSwitchChannel(channel)}
+                  >
+                    <div className="title"># {channel.channel_name}</div>
+                  </div>
+                ))}
+            </div>
+            <div className="group">
+              <div className="category">Voice Channels</div>
+              <div className="channel">
+                <div className="title"> channel</div>
+              </div>
+            </div>
+          </div>
+
+          <footer className="channels-footer">
+            <img
+              className="avatar"
+              alt="Avatar"
+              src="https://discordapp.com/assets/0e291f67c9274a1abdddeb3fd919cbaa.png"
+            />
+            <div className="channels-footer-details">
+              <span className="username">yourself</span>
+              <span className="tag">#0001</span>
+            </div>
+            <div className="channels-footer-controls button-group">
+              <button aria-label="Mute" className="button button-mute"></button>
+              <button
+                aria-label="Deafen"
+                className="button button-deafen"
+              ></button>
+              <button
+                aria-label="Settings"
+                className="button button-settings"
+              ></button>
+            </div>
+          </footer>
+        </div>
+      </React.Fragment>
+    );
+  };
 
   return (
     <React.Fragment>
-      <ServerList />
-
-      <div className="sidebar-container">
-        <div className="sidebar-header">
-          <div className="title">General</div>
-        </div>
-        <div className="sidebar-body">
-          <div className="group">
-            <div className="category">Text Channels</div>
-            {activeServer &&
-              Object.keys(activeServer).length > 1 &&
-              activeServer._channels.map((channel, i) => (
-                <div className="channel" key={i} onClick={() => onSwitchChannel(channel)}>
-                  <div className="title"># {channel.channel_name}</div>
-                </div>
-              ))}
-          </div>
-          <div className="group">
-            <div className="category">Voice Channels</div>
-            <div className="channel">
-              <div className="title"> channel</div>
-            </div>
-          </div>
-        </div>
-
-        <footer className="channels-footer">
-          <img
-            className="avatar"
-            alt="Avatar"
-            src="https://discordapp.com/assets/0e291f67c9274a1abdddeb3fd919cbaa.png"
-          />
-          <div className="channels-footer-details">
-            <span className="username">yourself</span>
-            <span className="tag">#0001</span>
-          </div>
-          <div className="channels-footer-controls button-group">
-            <button aria-label="Mute" className="button button-mute"></button>
-            <button
-              aria-label="Deafen"
-              className="button button-deafen"
-            ></button>
-            <button
-              aria-label="Settings"
-              className="button button-settings"
-            ></button>
-          </div>
-        </footer>
-      </div>
+      <Hidden smUp>
+        <SwipeableDrawer
+          container={container}
+          variant="temporary"
+          anchor="left"
+          open={sideBarOpen}
+          onClose={onCloseSideBar}
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+        >
+          {responsiveView()}
+        </SwipeableDrawer>
+      </Hidden>
+      <Hidden xsDown>{responsiveView()}</Hidden>
 
       <Dialog
         open={createChannelDialog}

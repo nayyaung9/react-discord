@@ -3,7 +3,7 @@
   flex: 0 0 240px;
   flex-direction: column;
 }
-.sidebar-container:nth-child(2) .sidebar-header {
+.sidebar-container .sidebar-header {
   display: flex;
   align-items: center;
   border-bottom: 1px solid #1f2124;

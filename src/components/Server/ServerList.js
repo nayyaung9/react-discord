@@ -11,7 +11,8 @@ const ServerList = () => {
   const dispatch = useDispatch();
 
   const auth = useSelector((state) => state.auth.user);
-  const servers = useSelector((state) => state.server.servers);
+  const serversStore = useSelector((state) => state.server.servers);
+  const servers = Object.values(serversStore);
 
   useEffect(() => {
     dispatch(serverActions.fetchUserServer(auth?._id));

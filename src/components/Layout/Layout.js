@@ -29,35 +29,21 @@ function Layout(props) {
     setActiveUserOpen(false);
   };
 
-  const renderChatItems = (items) => {
-    return items.map((item, i) => (
-      <div
-        key={i}
-        style={{ display: "flex", flexDirection: "row", marginBottom: 20 }}
-      >
-        <Avatar
-          src="./image/discord.jpg"
-          style={{ marginRight: 10 }}
-          alt={item.username + i}
-        />
-        <div>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <Typography style={{ marginRight: 10 }}>{item.username}</Typography>
-            <Typography>{item.timestamps}</Typography>
-          </div>
-          <Typography>{item.message}</Typography>
-        </div>
-      </div>
-    ));
-  };
-
   return (
     <div className="app-container">
       <Sidebar sideBarOpen={sideBarOpen} onCloseSideBar={onCloseSideBar} />
 
-      <MessageLayout onOpenSideBar={onOpenSideBar} sideBarOpen={sideBarOpen} />
+      <MessageLayout
+        onOpenSideBar={onOpenSideBar}
+        sideBarOpen={sideBarOpen}
+        onOpenActiveUser={onOpenActiveUser}
+        activeUserOpen={activeUserOpen}
+      />
 
-      <ActiveUserList />
+      <ActiveUserList
+        activeUserOpen={activeUserOpen}
+        onCloseActiveUser={onCloseActiveUser}
+      />
     </div>
   );
 }

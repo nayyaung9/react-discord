@@ -4,6 +4,7 @@
   flex-direction: column;
   align-items: center;
   background-color: #1F2124;
+  height: 100%;
 }
 .server-container .icon {
   display: flex;

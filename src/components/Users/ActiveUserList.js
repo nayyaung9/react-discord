@@ -1,58 +1,27 @@
 import React from "react";
 
-import { Drawer, List, ListItem, ListItemText } from "@material-ui/core";
-import Hidden from "@material-ui/core/Hidden";
 import {
+  Drawer,
+  Hidden,
+  List,
+  ListItem,
+  ListItemText,
   makeStyles,
-  Toolbar,
-  AppBar,
   Typography,
   ListItemAvatar,
   Avatar,
 } from "@material-ui/core";
+
 import { useSelector } from "react-redux";
 import "./users.css";
 
-const drawerWidth = 240;
-
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-  },
-  sidebar: {
-    background: "#36393f",
-  },
-  drawer: {
-    [theme.breakpoints.up("sm")]: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
-  },
-  appBar: {
-    [theme.breakpoints.up("sm")]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
-    },
-    backgroundColor: "#36393f",
-    zIndex: theme.zIndex.drawer + 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up("sm")]: {
-      display: "none",
-    },
-  },
-  // necessary for content to be below app bar
-  toolbar: theme.mixins.toolbar,
   drawerPaper: {
-    width: drawerWidth,
+    width: 200,
+    display: "flex",
+    flexDirection: "row",
     borderRight: 0,
-    left: "auto",
-    background: "#2f3136",
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
+    background: "transparent",
   },
 }));
 
@@ -67,25 +36,66 @@ const ActiveUserList = (props) => {
 
   return (
     <React.Fragment>
-      <div className="active-users-list">
-        <List>
-          {activeServer?._users &&
-            activeServer?._users.map((user, index) => (
-              <ListItem button key={user}>
-                <ListItemAvatar>
-                  <Avatar>S</Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <Typography className="text-white">
-                      {user.username}
-                    </Typography>
-                  }
-                />
-              </ListItem>
-            ))}
-        </List>
-      </div>
+      <Hidden smUp>
+        <Drawer
+          container={container}
+          variant="temporary"
+          anchor="right"
+          open={activeUserOpen}
+          onClose={onCloseActiveUser}
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+        >
+          <div className="active-users-list">
+            <List>
+              {activeServer?._users &&
+                activeServer?._users.map((user, index) => (
+                  <ListItem button key={user}>
+                    <ListItemAvatar>
+                      <Avatar>S</Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={
+                        <Typography className="text-white">
+                          {user.username}
+                        </Typography>
+                      }
+                    />
+                  </ListItem>
+                ))}
+            </List>
+          </div>
+        </Drawer>
+      </Hidden>
+      <Hidden xsDown>
+        <div className="active-users-list">
+          <div className="text-white">
+            Online — {activeServer?._users && activeServer?._users.length}
+          </div>
+
+          <List>
+            {activeServer?._users &&
+              activeServer?._users.map((user, index) => (
+                <ListItem button key={user}>
+                  <ListItemAvatar>
+                    <Avatar src="./image/discord.jpg" />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={
+                      <Typography className="text-white">
+                        {user.username}
+                      </Typography>
+                    }
+                  />
+                </ListItem>
+              ))}
+          </List>
+        </div>
+      </Hidden>
     </React.Fragment>
   );
 };

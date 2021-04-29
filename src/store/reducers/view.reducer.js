@@ -1,4 +1,9 @@
-import { CHANGE_SERVER_VIEW, CHANGE_CHANNEL_VIEW } from "../action.types";
+import _ from "lodash";
+import {
+  CHANGE_SERVER_VIEW,
+  CHANGE_CHANNEL_VIEW,
+  ADD_CHANNEL_TO_SERVER,
+} from "../action.types";
 
 const initialState = {
   activeServer: {},
@@ -18,6 +23,24 @@ export function viewReducer(state = initialState, action) {
         ...state,
         activeChannel: action.payload,
       };
+    case ADD_CHANNEL_TO_SERVER:
+      return {
+        ...state,
+        activeServer: {
+          ...state.activeServer,
+          _channels: [...state.activeServer._channels, action.payload.channel],
+        },
+      };
+    // case FETCH_CHANNEL_MESSAGES_LIST:
+    //   return {
+    //     ...state,
+    //     activeServer: {
+    //       ...state.activeServer,
+    //       _channels: {
+    //         [state.activeServer._channels]
+    //       },
+    //     },
+    //   };
     default:
       return state;
   }

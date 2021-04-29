@@ -20,7 +20,11 @@ exports.createChannel = async (req, res) => {
       },
       { new: true }
     ).then((data) => {
-      return res.status(200).json({ success: true, data: newChannel });
+      const payload = {
+        serverId,
+        channel: newChannel
+      }
+      return res.status(200).json({ success: true, data: payload });
     });
   } catch (err) {
     return res.status(500).json({

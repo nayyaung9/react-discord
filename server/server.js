@@ -2,6 +2,7 @@ var express = require("express"),
   mongoose = require("mongoose"),
   config = require("./config/db"),
   app = express(),
+  channelMessageController = require("./app/controllers/channelMessage.controller"),
   server = require("http").Server(app),
   io = require("socket.io")(server, {
     cors: {
@@ -51,6 +52,28 @@ app.use(function (req, res, next) {
 
 // Bring in our dependencies
 require("./config/express")(app, config);
+
+io.on("connection", async (socket) => {
+  const { channelId } = socket.handshake.query;
+  socket.join(channelId);
+
+  socket.on("channel", async function (channelId) {
+    socket.join(channelId);
+  });
+
+  socket.on("event://send-message", async function (message) {
+    const data = JSON.parse(message);
+    console.log(data);
+
+    await channelMessageController.sendMessageToChannel(data, io);
+  });
+
+  await channelMessageController.fetchInitialMessageByChannelId(channelId, io);
+
+  socket.on("disconnect", function () {
+    console.log("user disconnected");
+  });
+});
 
 server.listen(PORT, () => {
   console.log("We are live on port: ", PORT);

@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { FETCH_SERVER_CHANNELS } from "../action.types";
 
 const initialState = {
@@ -9,7 +10,9 @@ export function channelReducer(state = initialState, action) {
     case FETCH_SERVER_CHANNELS:
       return {
         ...state,
-        channels: action.payload,
+        channels: {
+          ..._.mapKeys(action.payload, "uniqueId"),
+        },
       };
     default:
       return state;

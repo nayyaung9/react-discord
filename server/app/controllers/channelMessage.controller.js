@@ -1,5 +1,4 @@
 const { ChannelMessage, EventType } = require("../models/ChannelMessage");
-const Channel = require("../models/Channel");
 
 exports.sendMessageToChannel = async (data, io) => {
   const { message, channelId, senderId } = data;

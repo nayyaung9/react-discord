@@ -2,6 +2,10 @@
   background-color: #303136;
   flex: 0 0 240px;
   flex-direction: column;
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 .sidebar-container .sidebar-header {
   display: flex;
@@ -22,6 +26,8 @@
 }
 .sidebar-container .sidebar-body {
   padding: 2rem 0.5rem;
+
+  flex: 1;
 }
 .sidebar-container .sidebar-body .group:not(:last-child) {
   margin-bottom: 1rem;
@@ -41,9 +47,28 @@
   cursor: pointer;
   font-weight: 300;
 }
+
+.sidebar-container .sidebar-body .active {
+  color: #fff;
+  cursor: pointer;
+  font-weight: 300;
+}
+
 .sidebar-container .sidebar-body .channel .title {
   padding: 0.5rem;
+  flex: 1;
 }
+
+.sidebar-container .title {
+  /* padding: 0.5rem; */
+  flex: 1;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 160px;
+  height: 1.2em;
+  white-space: nowrap;
+}
+
 .sidebar-container .sidebar-body .channel:hover {
   color: rgba(255, 255, 255, 0.7);
   background-color: #36393f;
@@ -52,11 +77,11 @@
 
 .channels-footer {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  margin-top: auto;
-  background: darken(#2e3136, 2.35%);
-  border-top: 1px solid darken(#2e3136, 7.7%);
-  padding: 0 10px;
+  background: #282b30;
+  border-top: 1px solid #1c1e21;
+  padding: 10px;
 }
 
 .channels-footer-details {
@@ -72,11 +97,13 @@
 
 .button {
   display: block;
+  display: flex;
+  justify-content: center;
   width: 32px;
   height: 32px;
 }
 svg {
-  width: 16px;
+  width: 100%;
 }
 
 .avatar {
@@ -85,17 +112,10 @@ svg {
   border-radius: 50%;
 }
 
-.username,
-.tag {
-  display: block;
-  font-weight: 300;
-}
-
 .username {
   font-size: 0.9rem;
-}
+  display: block;
+  color: white;
 
-.tag {
-  color: rgba(#fff, 0.45);
-  font-size: 0.7rem;
+  font-weight: 300;
 }

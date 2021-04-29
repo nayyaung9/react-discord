@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import MessageTextField from "./MessageTextField";
-import { makeStyles, IconButton } from "@material-ui/core";
+import { makeStyles, IconButton, Fade } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import PeopleIcon from "@material-ui/icons/People";
 import { useSelector } from "react-redux";
 import io from "socket.io-client";
 import { apiEndpoint } from "../../api";
+import moment from "moment";
+import DomPurify from "dompurify";
 
 import "./message.css";
 
@@ -63,7 +65,7 @@ const MessageLayout = ({
 
     socketRef.current.on("event://push-message", (message) => {
       setItems((items) => [message]);
-      console.log('message', message);
+      console.log("message", message);
       scrollToBottom();
     });
 
@@ -82,7 +84,16 @@ const MessageLayout = ({
 
     socketRef.current.emit("event://send-message", JSON.stringify(payload));
 
-    setChatMessage('');
+    setChatMessage("");
+  };
+
+  const isMessageCodeBlock = (message) => {
+    if (message.startsWith("```") && message.endsWith("```")) return true;
+    else return false;
+  };
+
+  const formatCode = (message) => {
+    return message.split("```")[1];
   };
 
   return (
@@ -113,17 +124,59 @@ const MessageLayout = ({
         {items &&
           items.map((data) => {
             return data.map((item, i) => {
+              console.log(item);
               return (
-                <div className="post" key={i}>
-                  <div className="avatar"></div>
-                  <div className="text">
-                    <div className="username">{item?.sender?.username}</div>
-                    <div className="timestamp">Today at 12:00 PM</div>
-                    <div className="message">
-                      {item.message ? item.message : ""}
-                    </div>
-                  </div>
-                </div>
+                <React.Fragment key={i}>
+                  <Fade in={true} timeout={500}>
+                    {item.event_type !== 0 ? (
+                      <div className="post">
+                        <div className="text">
+                          <div className="timestamp">
+                            {moment(item.createdAt).format("MMM DD YYYY  h:mm")}
+                          </div>
+
+                          <div className="message">
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: item.message ? item.message : "",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="post">
+                        <div className="avatar"></div>
+                        <div className="text">
+                          <div className="username">
+                            {item?.sender?.username}
+                          </div>
+                          <div className="timestamp">
+                            {moment(item.createdAt).format("MMM DD YYYY  h:mm")}
+                          </div>
+
+                          {!isMessageCodeBlock(
+                            item.message ? item.message : ""
+                          ) ? (
+                            <div className="message">
+                              {item.message ? item.message : ""}
+                            </div>
+                          ) : (
+                            <pre className="prettyprint">
+                              <div
+                                dangerouslySetInnerHTML={{
+                                  __html: DomPurify.sanitize(
+                                    formatCode(item.message ? item.message : "")
+                                  ),
+                                }}
+                              />
+                            </pre>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </Fade>
+                </React.Fragment>
               );
             });
           })}

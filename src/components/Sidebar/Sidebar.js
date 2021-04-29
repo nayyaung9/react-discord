@@ -12,9 +12,23 @@ import {
   DialogContentText,
   DialogActions,
   TextField,
+  Menu,
+  MenuItem,
+  withStyles,
+  ListItemIcon,
+  ListItemText,
 } from "@material-ui/core";
 import ServerList from "../Server/ServerList";
 import AddIcon from "@material-ui/icons/Add";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
+import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
+import MicIcon from "@material-ui/icons/Mic";
+import HeadsetIcon from "@material-ui/icons/Headset";
+import SettingsIcon from "@material-ui/icons/Settings";
+import VolumeUpIcon from "@material-ui/icons/VolumeUp";
 // actions & utils
 import { useSelector, useDispatch } from "react-redux";
 import { channelActions } from "../../store/actions/channel.action";
@@ -39,7 +53,18 @@ const Sidebar = (props) => {
 
   const auth = useSelector((state) => state.auth.user);
   const activeServer = useSelector((state) => state.view.activeServer);
+  const activeChannel = useSelector((state) => state.view.activeChannel);
   const dispatch = useDispatch();
+
+  const [sideBarMenu, setSideBarMenu] = React.useState(null);
+
+  const onOpenSideBarMenu = (event) => {
+    setSideBarMenu(event.currentTarget);
+  };
+
+  const onCloseSideBarMenu = () => {
+    setSideBarMenu(null);
+  };
 
   const [createChannelDialog, setCreateChannelDialog] = useState(false);
 
@@ -58,6 +83,18 @@ const Sidebar = (props) => {
     dispatch(viewActions.changeChannelView(channel));
   };
 
+  const onCopyServerId = (serverId) => {
+    navigator.clipboard.writeText(serverId ? serverId.uniqueId : "");
+    dispatch({
+      type: "OPEN_ALERT_STATUS",
+      payload: {
+        open: true,
+        message: "Copied Server Id",
+        status: "success",
+      },
+    });
+  };
+
   const responsiveView = () => {
     return (
       <React.Fragment>
@@ -65,8 +102,53 @@ const Sidebar = (props) => {
 
         <div className="sidebar-container">
           <div className="sidebar-header">
-            <div className="title">General</div>
+            <div className="flex flex-row justify-between">
+              <div className="title">
+                {activeServer ? activeServer.name : "Home"}
+              </div>
+              <IconButton onClick={onOpenSideBarMenu}>
+                {sideBarOpen ? (
+                  <ArrowDropDownIcon
+                    className="white-icon"
+                    style={{ width: 20 }}
+                  />
+                ) : (
+                  <ArrowDropUpIcon
+                    className="white-icon"
+                    style={{ width: 20 }}
+                  />
+                )}
+              </IconButton>
+            </div>
           </div>
+
+          <StyledMenu
+            id="customized-menu"
+            anchorEl={sideBarMenu}
+            keepMounted
+            open={Boolean(sideBarMenu)}
+            onClose={onCloseSideBarMenu}
+          >
+            <MenuItem button onClick={() => onCopyServerId(activeServer)}>
+              <ListItemIcon>
+                <PersonAddIcon className="white-icon" />
+              </ListItemIcon>
+              <ListItemText primary="Copy Server Id" />
+            </MenuItem>
+            <MenuItem>
+              <ListItemIcon>
+                <EditIcon className="white-icon" />
+              </ListItemIcon>
+              <ListItemText primary="Rename Server" />
+            </MenuItem>
+            <MenuItem>
+              <ListItemIcon>
+                <DeleteIcon className="white-icon" />
+              </ListItemIcon>
+              <ListItemText primary="Delete Server" />
+            </MenuItem>
+          </StyledMenu>
+
           <div className="sidebar-body">
             <div className="group">
               <div className="flex flex-row justify-between">
@@ -79,7 +161,11 @@ const Sidebar = (props) => {
                 Object.keys(activeServer).length > 1 &&
                 activeServer._channels.map((channel, i) => (
                   <div
-                    className="channel"
+                    className={`channel ${
+                      channel.uniqueId === activeChannel.uniqueId
+                        ? "active"
+                        : ""
+                    }`}
                     key={i}
                     onClick={() => onSwitchChannel(channel)}
                   >
@@ -88,9 +174,16 @@ const Sidebar = (props) => {
                 ))}
             </div>
             <div className="group">
-              <div className="category">Voice Channels</div>
+              <div className="flex flex-row justify-between">
+                <div className="category">Voice Channels</div>
+                <IconButton>
+                  <AddIcon className="white-icon" style={{ width: 20 }} />
+                </IconButton>
+              </div>
               <div className="channel">
-                <div className="title"> channel</div>
+                <div className="title flex flex-row">
+                  <VolumeUpIcon /> &nbsp; General
+                </div>
               </div>
             </div>
           </div>
@@ -102,19 +195,20 @@ const Sidebar = (props) => {
               src="https://discordapp.com/assets/0e291f67c9274a1abdddeb3fd919cbaa.png"
             />
             <div className="channels-footer-details">
-              <span className="username">yourself</span>
-              <span className="tag">#0001</span>
+              <span className="username">
+                {auth ? auth.username : "Visitor"}
+              </span>
             </div>
             <div className="channels-footer-controls button-group">
-              <button aria-label="Mute" className="button button-mute"></button>
-              <button
-                aria-label="Deafen"
-                className="button button-deafen"
-              ></button>
-              <button
-                aria-label="Settings"
-                className="button button-settings"
-              ></button>
+              <button aria-label="Mute" className="button button-mute">
+                <MicIcon />
+              </button>
+              <button aria-label="Deafen" className="button button-deafen">
+                <HeadsetIcon />
+              </button>
+              <button aria-label="Settings" className="button button-settings">
+                <SettingsIcon />
+              </button>
             </div>
           </footer>
         </div>
@@ -216,5 +310,27 @@ const Sidebar = (props) => {
     </React.Fragment>
   );
 };
+
+const StyledMenu = withStyles({
+  paper: {
+    border: "1px solid #1F2124",
+    background: "#1F2124",
+    color: "white",
+  },
+})((props) => (
+  <Menu
+    elevation={0}
+    getContentAnchorEl={null}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "center",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "center",
+    }}
+    {...props}
+  />
+));
 
 export default Sidebar;

@@ -20,7 +20,9 @@
   display: none;
 }
 
-
+.channel-by-server {
+  font-weight: bold;
+}
 .message-layout {
   background-color: #36393e;
   flex-grow: 1;
@@ -61,8 +63,8 @@
   display: flex;
   align-items: center;
 }
-.message-body .post:not(:last-child) {
-  margin-bottom: 2rem;
+.message-body .post {
+  margin-bottom: 1rem;
   padding-bottom: 2rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -138,3 +140,13 @@
   outline: none;
 }
 /* textbox */
+
+.prettyprint {
+  background: #2f3136 !important;
+  border-radius: 6px !important;
+}
+
+.prettyprint div {
+  border: 2px solid #2a2c31 !important;
+  border-radius: 6px !important;
+}

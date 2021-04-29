@@ -1,5 +1,7 @@
 const Server = require("../models/Server");
 const Channel = require("../models/Channel");
+const { ChannelMessage, EventType } = require("../models/ChannelMessage");
+const User = require("../models/User");
 
 exports.createServer = async (req, res) => {
   const { name, userId } = req.body;
@@ -59,6 +61,8 @@ exports.fetchUserServer = async (req, res) => {
 exports.joinServerById = async (req, res) => {
   const { serverId, userId } = req.body;
 
+  const findThatUser = await User.findById(userId);
+
   let findExistedServer = await Server.findOne({ uniqueId: serverId });
 
   if (!findExistedServer) {
@@ -67,28 +71,34 @@ exports.joinServerById = async (req, res) => {
       .json({ success: false, data: "Server Not Found or Server is deleted" });
   }
 
-  let findThisUserIsJoined = await Server.find({ _users: { $in: userId } });
-
-  if (!findThisUserIsJoined) {
-    await Server.findOneAndUpdate(
-      { uniqueId: serverId },
-      {
+  await Server.findOneAndUpdate(
+    { uniqueId: serverId },
+    {
+      $addToSet: {
         $push: {
           _users: userId,
         },
       },
-      { new: true }
-    )
-      .populate("_channels")
-      .populate("_users")
-      .populate("_admin")
-      .then((data) => {
-        return res.status(200).json({ success: true, data });
-      })
-      .catch((err) => {
-        return res
-          .status(500)
-          .json({ success: false, data: "Cant join right now." });
+    },
+    { new: true }
+  )
+    .populate("_channels")
+    .populate("_users")
+    .populate("_admin")
+    .then(async (data) => {
+      let createdMessage = new ChannelMessage({
+        channelId: data?._channels[0].uniqueId,
+        message: `<b>${findThatUser.username} has joined</b>`,
+        event_type: EventType.JOIN,
+        sender: userId,
       });
-  }
+      await createdMessage.save();
+
+      return res.status(200).json({ success: true, data });
+    })
+    .catch((err) => {
+      return res
+        .status(500)
+        .json({ success: false, data: "You are already joined this server" });
+    });
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles, IconButton, Divider, Tooltip } from "@material-ui/core";
+import { makeStyles, IconButton, Avatar } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import ServerDialog from "./ServerDialog";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,11 +37,13 @@ const ServerList = () => {
       {servers &&
         servers.map((server, i) => (
           <IconButton key={i} onClick={() => onChangeServerView(server)}>
-            <div className="icon" data-tooltip={server.name} />
+            {/* <div className="icon" data-tooltip={server.name} /> */}
+
+            <Avatar>{server.name.split(' ')}</Avatar>
           </IconButton>
         ))}
       <IconButton onClick={handleClickOpen}>
-        <AddIcon className="white-icon"/>
+        <AddIcon className="white-icon" />
       </IconButton>
 
       <ServerDialog open={open} handleClose={handleClose} />

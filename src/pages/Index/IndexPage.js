@@ -12,8 +12,9 @@ import {
   registerFormValidation,
   loginFormValidation,
 } from "../../utils/formValidation";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { authActions } from '../../store/actions/auth.action';
+import history from '../../history';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -83,6 +84,17 @@ const IndexPage = () => {
   const classes = useStyles();
   const [mainView, setMainView] = useState(true);
   const [onRegister, setOnRegister] = useState(false);
+  const auth = useSelector(state => state.auth);
+
+  console.log(auth);
+
+  React.useEffect(() => {
+    if(typeof auth === 'object') {
+      if(auth.isAuth) {
+        history.push('/home')
+      }
+    }
+  }, []);
   const dispatch = useDispatch();
 
   const onChangeView = (e) => {

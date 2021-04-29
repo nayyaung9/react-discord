@@ -1,5 +1,6 @@
 import React from "react";
-import TextareaAutosize from "@material-ui/core/TextareaAutosize";
+import { TextareaAutosize, IconButton } from "@material-ui/core";
+import SendIcon from "@material-ui/icons/Send";
 
 const MessageTextField = ({
   onSendMessage,
@@ -7,7 +8,6 @@ const MessageTextField = ({
   chatMessage,
   setChatMessage,
 }) => {
-
   function handleOnChange(e) {
     if (e.target.value !== "\n") setChatMessage(e.target.value);
   }
@@ -23,7 +23,16 @@ const MessageTextField = ({
           value={chatMessage}
           onChange={(e) => handleOnChange(e)}
         />
-        <button onClick={onSendMessage}>send</button>
+        {!chatMessage.length < 1 && (
+          <IconButton
+            edge="start"
+            style={{ marginLeft: 10, backgroundColor: '#7289da' }}
+            onClick={onSendMessage}
+            aria-label="menu"
+          >
+            <SendIcon className="white-icon" />
+          </IconButton>
+        )}
       </div>
     </React.Fragment>
   );

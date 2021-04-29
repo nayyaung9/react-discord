@@ -8,7 +8,7 @@ const config = {
   test: {
     root: rootPath,
     app: {
-      name: "talkie-phote",
+      name: "discord-clone",
     },
     port: 27017,
     db: "mongodb://localhost:27017/react-discord",
@@ -17,10 +17,10 @@ const config = {
   production: {
     root: rootPath,
     app: {
-      name: "talkie-phote",
+      name: "discord-clone",
     },
     port: 27017,
-    db: `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.qmrxs.mongodb.net/talkie-phote?retryWrites=true&w=majority`,
+    db: `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.jjvag.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
     jwtSecret: process.env.jwtSecret,
   },
 };

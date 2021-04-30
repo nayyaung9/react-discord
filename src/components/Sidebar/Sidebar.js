@@ -57,6 +57,9 @@ const Sidebar = (props) => {
   const dispatch = useDispatch();
 
   const [sideBarMenu, setSideBarMenu] = React.useState(null);
+  const [channelMenu, setChannelMenu] = React.useState(null);
+  const [deleteChannelDialog, setDeleteChannelDialog] = React.useState(false);
+  const [currentChannel, setCurrentChannel] = useState({});
 
   const onOpenSideBarMenu = (event) => {
     setSideBarMenu(event.currentTarget);
@@ -64,6 +67,16 @@ const Sidebar = (props) => {
 
   const onCloseSideBarMenu = () => {
     setSideBarMenu(null);
+  };
+
+  const onOpenChannelMenu = (event, channel) => {
+    setCurrentChannel(channel);
+    setChannelMenu(null);
+    setChannelMenu(event.currentTarget);
+  };
+
+  const onCloseChannelMenu = () => {
+    setChannelMenu(null);
   };
 
   const [createChannelDialog, setCreateChannelDialog] = useState(false);
@@ -95,6 +108,21 @@ const Sidebar = (props) => {
     });
   };
 
+  const onOpendeleteChannelDialog = (e, channel) => {
+    onOpenChannelMenu(e, channel);
+    setChannelMenu(null);
+
+    setDeleteChannelDialog(true);
+  };
+
+  const onCloseDeleteChannelDialog = () => {
+    setDeleteChannelDialog(false);
+  };
+
+  const onDeleteChannelAction = (channelId) => {
+    dispatch(channelActions.deleteChannel(channelId));
+    setDeleteChannelDialog(false);
+  };
   const responsiveView = () => {
     return (
       <React.Fragment>
@@ -161,7 +189,7 @@ const Sidebar = (props) => {
                 Object.keys(activeServer).length > 1 &&
                 activeServer._channels.map((channel, i) => (
                   <div
-                    className={`channel ${
+                    className={`channel flex flex-row justify-between ${
                       channel.uniqueId === activeChannel.uniqueId
                         ? "active"
                         : ""
@@ -170,9 +198,43 @@ const Sidebar = (props) => {
                     onClick={() => onSwitchChannel(channel)}
                   >
                     <div className="title"># {channel.channel_name}</div>
+                    <IconButton
+                      className="channel-setting-icon"
+                      onClick={(e) => onOpenChannelMenu(e, channel)}
+                    >
+                      <SettingsIcon
+                        className="white-icon"
+                        style={{ width: 12 }}
+                      />
+                    </IconButton>
                   </div>
                 ))}
             </div>
+
+            <StyledMenu
+              id="customized-menu"
+              anchorEl={channelMenu}
+              keepMounted
+              open={Boolean(channelMenu)}
+              onClose={onCloseChannelMenu}
+            >
+              <MenuItem>
+                <ListItemIcon>
+                  <EditIcon className="white-icon" />
+                </ListItemIcon>
+                <ListItemText primary="Rename Channel" />
+              </MenuItem>
+              <MenuItem
+                button
+                onClick={(e) => onOpendeleteChannelDialog(e, currentChannel)}
+              >
+                <ListItemIcon>
+                  <DeleteIcon className="white-icon" />
+                </ListItemIcon>
+                <ListItemText primary="Delete Channel" />
+              </MenuItem>
+            </StyledMenu>
+
             <div className="group">
               <div className="flex flex-row justify-between">
                 <div className="category">Voice Channels</div>
@@ -304,6 +366,35 @@ const Sidebar = (props) => {
         <DialogActions>
           <Button onClick={onCloseCreateChannelDialog} color="primary">
             Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={deleteChannelDialog}
+        onClose={onCloseDeleteChannelDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          #{currentChannel.channel_name} Channel Delete
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this channel #
+            {currentChannel.channel_name} ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onCloseDeleteChannelDialog} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={() => onDeleteChannelAction(currentChannel.uniqueId)}
+            color="primary"
+            autoFocus
+          >
+            Delete
           </Button>
         </DialogActions>
       </Dialog>

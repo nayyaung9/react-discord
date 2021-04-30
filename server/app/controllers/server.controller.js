@@ -71,34 +71,47 @@ exports.joinServerById = async (req, res) => {
       .json({ success: false, data: "Server Not Found or Server is deleted" });
   }
 
-  await Server.findOneAndUpdate(
-    { uniqueId: serverId },
-    {
-      $addToSet: {
+  let getJoinedUser =
+    findExistedServer &&
+    findExistedServer._users.filter((users) => {
+      return users;
+    });
+console.log(getJoinedUser.includes(findThatUser._id));
+
+  if (!getJoinedUser.includes(findThatUser._id)) {
+    await Server.findOneAndUpdate(
+      { uniqueId: serverId },
+      {
         $push: {
           _users: userId,
         },
       },
-    },
-    { new: true }
-  )
-    .populate("_channels")
-    .populate("_users")
-    .populate("_admin")
-    .then(async (data) => {
-      let createdMessage = new ChannelMessage({
-        channelId: data?._channels[0].uniqueId,
-        message: `<b>${findThatUser.username} has joined</b>`,
-        event_type: EventType.JOIN,
-        sender: userId,
-      });
-      await createdMessage.save();
+      { new: true }
+    )
+      .populate("_channels")
+      .populate("_users")
+      .populate("_admin")
+      .then(async (data) => {
+        let createdMessage = new ChannelMessage({
+          channelId: data?._channels[0].uniqueId,
+          message: `<b>${findThatUser.username} has joined</b>`,
+          event_type: EventType.JOIN,
+          sender: userId,
+        });
+        await createdMessage.save();
 
-      return res.status(200).json({ success: true, data });
-    })
-    .catch((err) => {
-      return res
-        .status(500)
-        .json({ success: false, data: "You are already joined this server" });
+        return res.status(200).json({ success: true, data });
+      })
+      .catch((err) => {
+        return res.status(500).json({
+          success: false,
+          data: "Cant join the server or server is deleted",
+        });
+      });
+  } else {
+    return res.status(500).json({
+      success: false,
+      data: "you are already join this server.",
     });
+  }
 };

@@ -65,7 +65,6 @@ const MessageLayout = ({
 
     socketRef.current.on("event://push-message", (message) => {
       setItems((items) => [message]);
-      console.log("message", message);
       scrollToBottom();
     });
 
@@ -124,7 +123,6 @@ const MessageLayout = ({
         {items &&
           items.map((data) => {
             return data.map((item, i) => {
-              console.log(item);
               return (
                 <React.Fragment key={i}>
                   <Fade in={true} timeout={500}>

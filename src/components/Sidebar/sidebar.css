@@ -29,7 +29,7 @@
 
   flex: 1;
 }
-.sidebar-container .sidebar-body .group:not(:last-child) {
+.sidebar-container .sidebar-body .group {
   margin-bottom: 1rem;
 }
 .sidebar-container .sidebar-body .category {
@@ -47,7 +47,13 @@
   cursor: pointer;
   font-weight: 300;
 }
-
+.channel-setting-icon {
+  display: none !important;
+}
+.sidebar-container .sidebar-body .channel:hover .channel-setting-icon{
+  
+  display: block !important;
+}
 .sidebar-container .sidebar-body .active {
   color: #fff;
   cursor: pointer;

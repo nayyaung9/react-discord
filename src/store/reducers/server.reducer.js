@@ -1,5 +1,8 @@
 import _ from "lodash";
-import { USER_SERVERS_LIST,  } from "../action.types";
+import {
+  USER_SERVERS_LIST,
+  ADD_NEW_SERVER_TO_USER_JOINED,
+} from "../action.types";
 
 const initialState = {
   servers: [],
@@ -10,9 +13,12 @@ export function serverReducer(state = initialState, action) {
     case USER_SERVERS_LIST:
       return {
         ...state,
-        servers: {
-          ..._.mapKeys(action.payload, "uniqueId"),
-        },
+        servers: action.payload,
+      };
+    case ADD_NEW_SERVER_TO_USER_JOINED:
+      return {
+        ...state,
+        servers: [...state.servers, action.payload],
       };
     // case FETCH_CHANNEL_MESSAGES_LIST:
     //   return {

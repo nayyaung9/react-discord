@@ -45,3 +45,27 @@ exports.createChannel = async (req, res) => {
   }
 };
 
+exports.deleteChannel = async (req, res) => {
+  const { channelId } = req.params;
+
+  await Channel.findOneAndRemove({ uniqueId: channelId })
+    .then(async (data) => {
+      await ChannelMessage.deleteMany({
+        channelId,
+      })
+        .then((result) => {
+          console.log('resul', result);
+          return res.status(200).json({
+            success: true,
+            data,
+          });
+        })
+        .catch((err) => {
+          console.log("err", err);
+          return res.status(500).json({ success: false, data: {} });
+        });
+    })
+    .catch((err) => {
+      return res.status(500).json({ status: false, data: err.message });
+    });
+};

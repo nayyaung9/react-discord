@@ -39,7 +39,7 @@ const ServerList = () => {
           <IconButton key={i} onClick={() => onChangeServerView(server)}>
             {/* <div className="icon" data-tooltip={server.name} /> */}
 
-            <Avatar>{server.name.split(' ')}</Avatar>
+            <Avatar>{server.name}</Avatar>
           </IconButton>
         ))}
       <IconButton onClick={handleClickOpen}>

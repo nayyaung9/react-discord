@@ -136,12 +136,12 @@ const Sidebar = (props) => {
               </div>
               <IconButton onClick={onOpenSideBarMenu}>
                 {sideBarOpen ? (
-                  <ArrowDropDownIcon
+                  <ArrowDropUpIcon
                     className="white-icon"
                     style={{ width: 20 }}
                   />
                 ) : (
-                  <ArrowDropUpIcon
+                  <ArrowDropDownIcon
                     className="white-icon"
                     style={{ width: 20 }}
                   />
@@ -181,9 +181,11 @@ const Sidebar = (props) => {
             <div className="group">
               <div className="flex flex-row justify-between">
                 <div className="category">Text Channels</div>
-                <IconButton onClick={onOpenCreateChannelDialog}>
-                  <AddIcon className="white-icon" style={{ width: 20 }} />
-                </IconButton>
+                {auth._id === activeServer._id && (
+                  <IconButton onClick={onOpenCreateChannelDialog}>
+                    <AddIcon className="white-icon" style={{ width: 20 }} />
+                  </IconButton>
+                )}
               </div>
               {activeServer &&
                 Object.keys(activeServer).length > 1 &&
@@ -198,15 +200,17 @@ const Sidebar = (props) => {
                     onClick={() => onSwitchChannel(channel)}
                   >
                     <div className="title"># {channel.channel_name}</div>
-                    <IconButton
-                      className="channel-setting-icon"
-                      onClick={(e) => onOpenChannelMenu(e, channel)}
-                    >
-                      <SettingsIcon
-                        className="white-icon"
-                        style={{ width: 12 }}
-                      />
-                    </IconButton>
+                    {channel.channel_name !== "general" && (
+                      <IconButton
+                        className="channel-setting-icon"
+                        onClick={(e) => onOpenChannelMenu(e, channel)}
+                      >
+                        <SettingsIcon
+                          className="white-icon"
+                          style={{ width: 12 }}
+                        />
+                      </IconButton>
+                    )}
                   </div>
                 ))}
             </div>

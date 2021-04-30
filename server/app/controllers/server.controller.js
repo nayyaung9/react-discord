@@ -8,6 +8,7 @@ exports.createServer = async (req, res) => {
   // userId is an admin of this server
 
   let findExistedServer = await Server.findOne({ name });
+  const findThatUser = await User.findById(userId);
 
   if (!findExistedServer) {
     try {
@@ -25,6 +26,14 @@ exports.createServer = async (req, res) => {
       });
 
       await newServer.save();
+
+      let createdMessage = new ChannelMessage({
+        channelId: newDefaultChannel.uniqueId,
+        message: `${findThatUser.username} has created <br /> <b>${newServer.name}</b> Server`,
+        event_type: EventType.SERVER,
+        sender: userId,
+      });
+      await createdMessage.save();
 
       return res.status(200).json({ success: true, data: newServer });
     } catch (err) {
@@ -76,7 +85,6 @@ exports.joinServerById = async (req, res) => {
     findExistedServer._users.filter((users) => {
       return users;
     });
-console.log(getJoinedUser.includes(findThatUser._id));
 
   if (!getJoinedUser.includes(findThatUser._id)) {
     await Server.findOneAndUpdate(

@@ -3,7 +3,10 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Server = require("../models/Server");
 const CONFIG = require("../../config/db");
+const Channel = require("../models/Channel");
+const { ChannelMessage, EventType } = require("../models/ChannelMessage");
 
 exports.register = async (req, res) => {
   const { username } = req.body;
@@ -16,12 +19,65 @@ exports.register = async (req, res) => {
 
       await newUser.save();
 
+      let findDefaultServer = await Server.findOne({
+        name: "Default",
+      }).populate("_channels");
+
+      if (findDefaultServer) {
+        const joinDefaultServer = await Server.findOneAndUpdate(
+          {
+            name: "Default",
+          },
+          {
+            $push: {
+              _users: newUser?._id,
+            },
+          },
+          { new: true }
+        );
+
+        await joinDefaultServer.save();
+
+        console.log("findDefaultServer", findDefaultServer);
+
+        let createdMessage = new ChannelMessage({
+          channelId: findDefaultServer._channels[0].uniqueId,
+          message: `${newUser.username} has joined <br /> <b>${findDefaultServer.name}</b> Server`,
+          event_type: EventType.SERVER,
+          sender: newUser?._id,
+        });
+        await createdMessage.save();
+      } else {
+        let newDefaultChannel = new Channel({
+          channel_name: "general",
+        });
+
+        await newDefaultChannel.save();
+
+        let newDefaultServer = new Server({
+          name: "Default",
+          _admin: newUser?._id,
+          _users: newUser?._id, // after creating the server, the admin also have joined this server.
+          _channels: newDefaultChannel?._id,
+        });
+
+        await newDefaultServer.save();
+
+        let createdMessage = new ChannelMessage({
+          channelId: newDefaultChannel.uniqueId,
+          message: `${newUser.username} has created <br /> <b>${newDefaultServer.name}</b> Server`,
+          event_type: EventType.SERVER,
+          sender: newUser?._id,
+        });
+        await createdMessage.save();
+      }
+
       return res.status(200).json({ success: true, data: newUser });
     } catch (err) {
-      console.log('err', err);
+      console.log("err", err);
       return res
         .status(500)
-        .json({ success: false, data: "There was an error" });
+        .json({ success: false, data: "Username or Email is already use." });
     }
   }
 

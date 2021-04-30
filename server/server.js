@@ -6,7 +6,7 @@ var express = require("express"),
   server = require("http").Server(app),
   io = require("socket.io")(server, {
     cors: {
-      origin: ["http://localhost:3000"],
+      origin: ["https://react-discord.vercel.app", "http://localhost:3000"],
       methods: ["GET", "POST"],
       credentials: true,
     },
